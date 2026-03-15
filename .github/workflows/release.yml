@@ -16,7 +16,7 @@ jobs:
     outputs:
       vsix_name: ${{ steps.package.outputs.vsix_name }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -41,7 +41,7 @@ jobs:
     name: Desktop app (macOS)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -71,7 +71,7 @@ jobs:
     name: Desktop app (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -103,7 +103,7 @@ jobs:
     name: Desktop app (Windows)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -134,7 +134,7 @@ jobs:
     needs: [vscode-package, desktop-mac, desktop-linux, desktop-win]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v4
         with:
           path: artifacts/
@@ -160,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: marketplace      # requires VSCE_PAT secret
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
