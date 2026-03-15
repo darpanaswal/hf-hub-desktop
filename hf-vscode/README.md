@@ -89,7 +89,7 @@ cd hf-desktop && npm run build
 Search **"HF Hub"** in the VS Code Extensions panel, or:
 
 ```
-ext install YOUR_PUBLISHER_ID.hf-hub-vscode
+ext install DarpanAswal.hf-hub-vscode
 ```
 
 ### Install from .vsix (e.g. on an SSH remote)
