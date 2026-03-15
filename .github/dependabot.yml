@@ -1,0 +1,53 @@
+version: 2
+updates:
+  # VS Code extension npm dependencies
+  - package-ecosystem: npm
+    directory: /hf-vscode
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - vscode-extension
+    open-pull-requests-limit: 5
+
+  # Desktop Electron/frontend npm dependencies
+  - package-ecosystem: npm
+    directory: /hf-desktop/frontend
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - desktop-frontend
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: npm
+    directory: /hf-desktop
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - desktop-electron
+    open-pull-requests-limit: 3
+
+  # Python backend pip dependencies
+  - package-ecosystem: pip
+    directory: /hf-desktop/backend
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - backend-python
+    open-pull-requests-limit: 5
+
+  # GitHub Actions versions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - dependencies
+      - github-actions

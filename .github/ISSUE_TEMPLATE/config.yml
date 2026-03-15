@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Question / Discussion
+    url: https://github.com/YOUR_USERNAME/hf-hub-desktop/discussions
+    about: Ask questions and discuss the project here
+
+  - name: Hugging Face Hub Docs
+    url: https://huggingface.co/docs/hub
+    about: Documentation for the Hugging Face Hub itself
+
+  - name: huggingface_hub library issues
+    url: https://github.com/huggingface/huggingface_hub/issues
+    about: Issues with the underlying huggingface_hub Python library (not this app)

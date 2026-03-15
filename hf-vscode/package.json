@@ -1,0 +1,284 @@
+{
+  "name": "hf-hub-vscode",
+  "displayName": "HF Hub",
+  "description": "Browse, download and upload Hugging Face models & datasets from VS Code \u2014 works on SSH remote and HPC clusters",
+  "version": "1.0.0",
+  "publisher": "DarpanAswal",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Other"
+  ],
+  "icon": "media/icon.png",
+  "keywords": [
+    "huggingface",
+    "machine learning",
+    "models",
+    "datasets",
+    "AI",
+    "LLM",
+    "HPC",
+    "cluster"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "hf-hub",
+          "title": "HF Hub",
+          "icon": "media/hf-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "hf-hub": [
+        {
+          "id": "hfHub.models",
+          "name": "Models",
+          "icon": "$(circuit-board)"
+        },
+        {
+          "id": "hfHub.datasets",
+          "name": "Datasets",
+          "icon": "$(database)"
+        },
+        {
+          "id": "hfHub.transfers",
+          "name": "Transfers",
+          "icon": "$(cloud-download)"
+        },
+        {
+          "id": "hfHub.cache",
+          "name": "Cache",
+          "icon": "$(server)"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "hfHub.setToken",
+        "title": "HF Hub: Set Access Token"
+      },
+      {
+        "command": "hfHub.setupBackend",
+        "title": "HF Hub: Setup Backend (install Python deps)"
+      },
+      {
+        "command": "hfHub.setBackendPath",
+        "title": "HF Hub: Set Backend Path"
+      },
+      {
+        "command": "hfHub.startBackend",
+        "title": "HF Hub: Start Backend",
+        "icon": "$(play)"
+      },
+      {
+        "command": "hfHub.stopBackend",
+        "title": "HF Hub: Stop Backend",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "hfHub.backendStatus",
+        "title": "HF Hub: Backend Status"
+      },
+      {
+        "command": "hfHub.downloadModel",
+        "title": "HF Hub: Download Model"
+      },
+      {
+        "command": "hfHub.downloadDataset",
+        "title": "HF Hub: Download Dataset"
+      },
+      {
+        "command": "hfHub.uploadFolder",
+        "title": "HF Hub: Upload File/Folder to Hub"
+      },
+      {
+        "command": "hfHub.clearCache",
+        "title": "HF Hub: Clear Cache"
+      },
+      {
+        "command": "hfHub.refresh",
+        "title": "HF Hub: Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "hfHub.openInHub",
+        "title": "HF Hub: Open on HuggingFace.co",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "hfHub.cancelTransfer",
+        "title": "Cancel Transfer",
+        "icon": "$(close)"
+      },
+      {
+        "command": "hfHub.searchModels",
+        "title": "HF Hub: Search Models"
+      },
+      {
+        "command": "hfHub.searchDatasets",
+        "title": "HF Hub: Search Datasets"
+      },
+      {
+        "command": "hfHub.removeTransfer",
+        "title": "Remove Transfer",
+        "icon": "$(close)"
+      },
+      {
+        "command": "hfHub.clearTransferHistory",
+        "title": "HF Hub: Clear Transfer History",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "hfHub.downloadItem",
+        "title": "Download",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "hfHub.openTransferLog",
+        "title": "Open Transfer Log",
+        "icon": "$(output)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "hfHub.refresh",
+          "when": "view == hfHub.models || view == hfHub.datasets",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "hfHub.downloadItem",
+          "when": "viewItem == modelItem",
+          "group": "inline"
+        },
+        {
+          "command": "hfHub.openInHub",
+          "when": "viewItem == modelItem",
+          "group": "inline"
+        },
+        {
+          "command": "hfHub.downloadItem",
+          "when": "viewItem == datasetItem",
+          "group": "inline"
+        },
+        {
+          "command": "hfHub.openInHub",
+          "when": "viewItem == datasetItem",
+          "group": "inline"
+        },
+        {
+          "command": "hfHub.cancelTransfer",
+          "when": "viewItem == activeTransfer",
+          "group": "inline"
+        },
+        {
+          "command": "hfHub.removeTransfer",
+          "when": "viewItem == doneTransfer",
+          "group": "inline"
+        },
+        {
+          "command": "hfHub.openTransferLog",
+          "when": "viewItem == activeTransfer",
+          "group": "inline"
+        },
+        {
+          "command": "hfHub.openTransferLog",
+          "when": "viewItem == doneTransfer",
+          "group": "inline"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "hfHub.uploadFolder",
+          "group": "hfhub@1",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "hfHub.uploadFolder",
+          "group": "hfhub@1",
+          "when": "!explorerResourceIsFolder && resourceScheme == file"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "HF Hub",
+      "properties": {
+        "hfHub.token": {
+          "type": "string",
+          "default": "",
+          "description": "Hugging Face access token (or set HF_TOKEN env var)",
+          "markdownDescription": "Get your token at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)"
+        },
+        "hfHub.backendPort": {
+          "type": "number",
+          "default": 57891,
+          "description": "Port for the HF Hub backend (shared with desktop app if running)"
+        },
+        "hfHub.cacheDir": {
+          "type": "string",
+          "default": "",
+          "description": "Custom cache directory (leave empty for default ~/.cache/huggingface)"
+        },
+        "hfHub.autoStartBackend": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically start the Python backend when the extension activates"
+        },
+        "hfHub.backendScript": {
+          "type": "string",
+          "default": "",
+          "description": "Full path to hf-desktop/backend/main.py (auto-detected if left empty)"
+        },
+        "hfHub.backendPythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to python/python3 executable. Leave empty to auto-detect from PATH and conda environments."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.5",
+    "@vscode/vsce": "^2.24.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/hf-hub-desktop.git"
+  },
+  "license": "MIT",
+  "files": [
+    "out/**",
+    "backend/**",
+    "media/**",
+    "LICENSE.md"
+  ],
+  "homepage": "https://github.com/YOUR_USERNAME/hf-hub-desktop",
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/hf-hub-desktop/issues"
+  },
+  "galleryBanner": {
+    "color": "#FF6B35",
+    "theme": "dark"
+  },
+  "qna": "https://github.com/YOUR_USERNAME/hf-hub-desktop/discussions",
+  "readme": "README.md"
+}
