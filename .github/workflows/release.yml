@@ -296,12 +296,11 @@ jobs:
     name: Publish to VS Code Marketplace
     needs: build-extension
     runs-on: ubuntu-latest
-    # Only publish on non-prerelease tags and only if VSCE_PAT secret is set
+    # Only publish on non-prerelease tags
     if: |
       !contains(github.ref_name, 'alpha') &&
       !contains(github.ref_name, 'beta') &&
-      !contains(github.ref_name, 'rc') &&
-      secrets.VSCE_PAT != ''
+      !contains(github.ref_name, 'rc')
 
     steps:
       - uses: actions/checkout@v4
@@ -321,6 +320,13 @@ jobs:
         run: npm install -g @vscode/vsce
 
       - name: Publish to Marketplace
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
           cd hf-vscode
-          vsce publish --packagePath *.vsix --pat ${{ secrets.VSCE_PAT }}
+          if [ -z "$VSCE_PAT" ]; then
+            echo "VSCE_PAT secret not set — skipping Marketplace publish."
+            echo "Add it in GitHub repo Settings → Secrets → VSCE_PAT to enable auto-publish."
+            exit 0
+          fi
+          vsce publish --packagePath *.vsix --pat "$VSCE_PAT" 
