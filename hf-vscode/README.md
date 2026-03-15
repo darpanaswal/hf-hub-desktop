@@ -51,24 +51,10 @@ If the desktop app is running, the VS Code extension connects to the same backen
 ---
 
 ## Desktop App
-
-### Install
-
-Download the latest release for your platform from [Releases](https://github.com/YOUR_USERNAME/hf-hub-desktop/releases):
-
-| Platform | File |
-|----------|------|
-| macOS (Intel + Apple Silicon) | `HF-Hub-Desktop-1.0.0-mac.dmg` |
-| Windows | `HF-Hub-Desktop-1.0.0-win.exe` |
-| Linux | `HF-Hub-Desktop-1.0.0-linux.AppImage` |
-
-On macOS you may need to right-click → Open the first time (Gatekeeper).
-On Linux: `chmod +x HF-Hub-Desktop-*.AppImage && ./HF-Hub-Desktop-*.AppImage`
-
 ### Build from source
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/hf-hub-desktop
+git clone https://github.com/darpanaswal/hf-hub-desktop
 cd hf-hub-desktop
 bash setup.sh          # installs all deps
 

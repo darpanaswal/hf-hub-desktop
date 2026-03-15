@@ -2,7 +2,7 @@
   "name": "hf-hub-vscode",
   "displayName": "HF Hub",
   "description": "Browse, download and upload Hugging Face models & datasets from VS Code — works on SSH remote and HPC clusters",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "DarpanAswal",
   "engines": {
     "vscode": "^1.85.0"
