@@ -3,330 +3,172 @@ name: Release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*'
 
-# Needed to create GitHub Releases and upload assets
 permissions:
   contents: write
 
 jobs:
-  # ── Build VS Code extension ───────────────────────────────────────────────
-  build-extension:
-    name: Build VS Code Extension
+  # ── VS Code extension ────────────────────────────────────────────────────────
+  vscode-package:
+    name: Package VS Code extension
     runs-on: ubuntu-latest
     outputs:
-      vsix-name: ${{ steps.package.outputs.vsix-name }}
-
+      vsix_name: ${{ steps.package.outputs.vsix_name }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: npm
-          cache-dependency-path: hf-vscode/package-lock.json
-
-      - name: Extract version from tag
-        id: version
-        run: echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
-
-      - name: Update version in package.json
-        run: |
-          cd hf-vscode
-          npm version ${{ steps.version.outputs.version }} --no-git-tag-version
-
-      - name: Install dependencies
+          node-version: '20'
+      - name: Install
         run: cd hf-vscode && npm ci
-
-      - name: TypeScript compile
-        run: cd hf-vscode && npm run compile
-
-      - name: Install vsce
-        run: npm install -g @vscode/vsce
-
-      - name: Package extension
+      - name: Compile
+        run: cd hf-vscode && npx tsc -p tsconfig.json
+      - name: Package .vsix
         id: package
         run: |
           cd hf-vscode
-          vsce package --no-dependencies
-          VSIX=$(ls *.vsix)
-          echo "vsix-name=$VSIX" >> $GITHUB_OUTPUT
-          echo "Packaged: $VSIX"
-
-      - name: Upload VSIX artifact
-        uses: actions/upload-artifact@v4
+          VERSION=${GITHUB_REF_NAME#v}
+          npx @vscode/vsce package --no-dependencies -o hf-hub-vscode-${VERSION}.vsix
+          echo "vsix_name=hf-hub-vscode-${VERSION}.vsix" >> $GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
         with:
-          name: vscode-extension
+          name: vsix
           path: hf-vscode/*.vsix
-          retention-days: 5
 
-  # ── Build desktop app (macOS) ─────────────────────────────────────────────
-  build-desktop-mac:
-    name: Desktop App (macOS)
+  # ── Desktop app — macOS ──────────────────────────────────────────────────────
+  desktop-mac:
+    name: Desktop app (macOS)
     runs-on: macos-latest
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+          node-version: '20'
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-
-      - name: Install Python backend deps (bundled into app)
+          python-version: '3.11'
+      - name: Install frontend deps
+        run: cd hf-desktop/frontend && npm ci
+      - name: Build frontend
+        run: cd hf-desktop/frontend && npm run build
+      - name: Install Electron deps
+        run: cd hf-desktop && npm ci
+      - name: Setup Python venv
         run: |
           cd hf-desktop/backend
-          python -m venv .venv
-          .venv/bin/pip install -r requirements.txt --quiet
-
-      - name: Install frontend deps and build
-        run: |
-          cd hf-desktop/frontend
-          npm ci
-          npm run build
-
-      - name: Install Electron deps and build
-        run: |
-          cd hf-desktop
-          npm ci
-          npm run build
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Code signing (optional — set these secrets if you have an Apple Developer account)
-          # CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
-          # CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
-          # APPLE_ID: ${{ secrets.APPLE_ID }}
-          # APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-
-      - name: Upload macOS artifacts
-        uses: actions/upload-artifact@v4
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt
+      - name: Build Electron app
+        run: cd hf-desktop && npx electron-builder --mac --publish never
+      - uses: actions/upload-artifact@v4
         with:
-          name: desktop-mac
-          path: |
-            hf-desktop/dist/*.dmg
-            hf-desktop/dist/*.zip
-          retention-days: 5
+          name: mac-dmg
+          path: hf-desktop/dist/*.dmg
 
-  # ── Build desktop app (Windows) ───────────────────────────────────────────
-  build-desktop-win:
-    name: Desktop App (Windows)
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Python backend deps
-        run: |
-          cd hf-desktop/backend
-          python -m venv .venv
-          .venv\Scripts\pip install -r requirements.txt --quiet
-
-      - name: Install frontend deps and build
-        run: |
-          cd hf-desktop/frontend
-          npm ci
-          npm run build
-
-      - name: Install Electron deps and build
-        run: |
-          cd hf-desktop
-          npm ci
-          npm run build
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: desktop-win
-          path: hf-desktop/dist/*.exe
-          retention-days: 5
-
-  # ── Build desktop app (Linux) ─────────────────────────────────────────────
-  build-desktop-linux:
-    name: Desktop App (Linux)
+  # ── Desktop app — Linux ──────────────────────────────────────────────────────
+  desktop-linux:
+    name: Desktop app (Linux)
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+          node-version: '20'
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-
-      - name: Install system deps for Electron
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends \
-            libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev \
-            librsvg2-dev patchelf
-
-      - name: Install Python backend deps
+          python-version: '3.11'
+      - name: Install system deps
+        run: sudo apt-get install -y libarchive-tools rpm
+      - name: Install frontend deps
+        run: cd hf-desktop/frontend && npm ci
+      - name: Build frontend
+        run: cd hf-desktop/frontend && npm run build
+      - name: Install Electron deps
+        run: cd hf-desktop && npm ci
+      - name: Setup Python venv
         run: |
           cd hf-desktop/backend
-          python -m venv .venv
-          .venv/bin/pip install -r requirements.txt --quiet
-
-      - name: Install frontend deps and build
-        run: |
-          cd hf-desktop/frontend
-          npm ci
-          npm run build
-
-      - name: Install Electron deps and build
-        run: |
-          cd hf-desktop
-          npm ci
-          npm run build
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Linux artifacts
-        uses: actions/upload-artifact@v4
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt
+      - name: Build Electron app
+        run: cd hf-desktop && npx electron-builder --linux --publish never
+      - uses: actions/upload-artifact@v4
         with:
-          name: desktop-linux
-          path: |
-            hf-desktop/dist/*.AppImage
-            hf-desktop/dist/*.deb
-          retention-days: 5
+          name: linux-appimage
+          path: hf-desktop/dist/*.AppImage
 
-  # ── Create GitHub Release ─────────────────────────────────────────────────
+  # ── Desktop app — Windows ────────────────────────────────────────────────────
+  desktop-win:
+    name: Desktop app (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frontend deps
+        run: cd hf-desktop/frontend && npm ci
+      - name: Build frontend
+        run: cd hf-desktop/frontend && npm run build
+      - name: Install Electron deps
+        run: cd hf-desktop && npm ci
+      - name: Setup Python venv
+        run: |
+          cd hf-desktop/backend
+          python3 -m venv .venv
+          .venv/Scripts/pip install -r requirements.txt
+      - name: Build Electron app
+        run: cd hf-desktop && npx electron-builder --win --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: win-installer
+          path: hf-desktop/dist/*.exe
+
+  # ── GitHub Release ───────────────────────────────────────────────────────────
   release:
     name: Create GitHub Release
-    needs:
-      - build-extension
-      - build-desktop-mac
-      - build-desktop-win
-      - build-desktop-linux
+    needs: [vscode-package, desktop-mac, desktop-linux, desktop-win]
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          path: release-artifacts/
-
-      - name: List artifacts
-        run: find release-artifacts/ -type f | sort
-
+          path: artifacts/
       - name: Extract version from tag
-        id: version
-        run: echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
-
-      - name: Generate release notes
-        id: notes
-        run: |
-          cat << 'EOF' > release_notes.md
-          ## HF Hub Desktop ${{ github.ref_name }}
-
-          GUI for Hugging Face Hub — browse, download, and upload models & datasets without writing code.
-          Includes a VS Code extension optimised for SSH/cluster workflows.
-
-          ### Install
-
-          #### Desktop App
-          | Platform | Download |
-          |---|---|
-          | macOS (Intel + Apple Silicon) | `.dmg` file below |
-          | Windows | `.exe` installer below |
-          | Linux | `.AppImage` below (no install needed) |
-
-          #### VS Code Extension
-          **Option 1 — Marketplace** (after first publish):
-          ```
-          ext install darpanaswal.hf-hub-vscode
-          ```
-          **Option 2 — Manual** (always works):
-          ```bash
-          code --install-extension hf-hub-vscode-${{ steps.version.outputs.version }}.vsix
-          ```
-
-          ### What's new
-          See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for full details.
-
-          ### Requirements
-          - **Desktop app**: macOS 12+, Windows 10+, Ubuntu 20.04+
-          - **VS Code extension**: VS Code 1.85+, Python 3.8+ on PATH
-
-          ---
-          > Not affiliated with Hugging Face, Inc. Uses the [huggingface_hub](https://github.com/huggingface/huggingface_hub) library (Apache 2.0).
-          EOF
-
-      - name: Create Release
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+      - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          name: "HF Hub Desktop ${{ github.ref_name }}"
-          body_path: release_notes.md
-          draft: false
-          prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
+          name: "HF Hub Desktop v${{ env.VERSION }}"
+          body_path: CHANGELOG.md
           files: |
-            release-artifacts/vscode-extension/*.vsix
-            release-artifacts/desktop-mac/*.dmg
-            release-artifacts/desktop-mac/*.zip
-            release-artifacts/desktop-win/*.exe
-            release-artifacts/desktop-linux/*.AppImage
-            release-artifacts/desktop-linux/*.deb
+            artifacts/vsix/*.vsix
+            artifacts/mac-dmg/*.dmg
+            artifacts/linux-appimage/*.AppImage
+            artifacts/win-installer/*.exe
+          draft: false
+          prerelease: false
 
-  # ── Publish to VS Code Marketplace ───────────────────────────────────────
-  publish-marketplace:
+  # ── Publish to VS Code Marketplace ──────────────────────────────────────────
+  vscode-publish:
     name: Publish to VS Code Marketplace
-    needs: build-extension
+    needs: vscode-package
     runs-on: ubuntu-latest
-    # Only publish on non-prerelease tags
-    if: |
-      !contains(github.ref_name, 'alpha') &&
-      !contains(github.ref_name, 'beta') &&
-      !contains(github.ref_name, 'rc')
-
+    environment: marketplace      # requires VSCE_PAT secret
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-
-      - name: Download VSIX artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: vscode-extension
-          path: hf-vscode/
-
-      - name: Install vsce
-        run: npm install -g @vscode/vsce
-
-      - name: Publish to Marketplace
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          node-version: '20'
+      - name: Install
+        run: cd hf-vscode && npm ci
+      - name: Compile
+        run: cd hf-vscode && npx tsc -p tsconfig.json
+      - name: Publish
         run: |
           cd hf-vscode
-          if [ -z "$VSCE_PAT" ]; then
-            echo "VSCE_PAT secret not set — skipping Marketplace publish."
-            echo "Add it in GitHub repo Settings → Secrets → VSCE_PAT to enable auto-publish."
-            exit 0
-          fi
-          vsce publish --packagePath *.vsix --pat "$VSCE_PAT" 
+          npx @vscode/vsce publish --no-dependencies -p ${{ secrets.VSCE_PAT }}
