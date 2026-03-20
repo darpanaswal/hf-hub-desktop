@@ -13,7 +13,7 @@
     "backend:dev": "cd backend && python3 main.py"
   },
   "devDependencies": {
-    "electron": "^30.0.0",
+    "electron": "^41.0.3",
     "electron-builder": "^24.13.3",
     "concurrently": "^8.2.2",
     "wait-on": "^7.2.0"
