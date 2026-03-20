@@ -16,7 +16,7 @@
     "electron": "^30.0.0",
     "electron-builder": "^24.13.3",
     "concurrently": "^8.2.2",
-    "wait-on": "^7.2.0"
+    "wait-on": "^9.0.4"
   },
   "build": {
     "appId": "com.hf-hub-desktop.app",
