@@ -1,0 +1,104 @@
+{
+  "name": "hf-hub-desktop",
+  "version": "1.1.1",
+  "description": "Desktop GUI for Hugging Face Hub — browse, download and upload models & datasets",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:electron\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:electron": "wait-on http://localhost:5173 && NODE_ENV=development electron .",
+    "build": "cd frontend && npm run build && electron-builder",
+    "backend:install": "cd backend && pip install -r requirements.txt --break-system-packages",
+    "backend:venv": "cd backend && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt",
+    "backend:dev": "cd backend && python3 main.py"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3",
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.hf-hub-desktop.app",
+    "productName": "HF Hub Desktop",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "backend/**/*",
+      "!backend/.venv",
+      "!backend/__pycache__"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!.venv",
+          "!__pycache__"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Development"
+    },
+    "copyright": "Copyright © 2025 Darpan Aswal",
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "homepage": "https://github.com/darpanaswal/hf-hub-desktop",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/hf-hub-desktop.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Darpan Aswal",
+    "email": "darpanaswal@gmail.com"
+  },
+  "keywords": [
+    "huggingface",
+    "machine-learning",
+    "models",
+    "datasets",
+    "electron",
+    "desktop"
+  ],
+  "bugs": {
+    "url": "https://github.com/darpanaswal/hf-hub-desktop/issues"
+  }
+}
