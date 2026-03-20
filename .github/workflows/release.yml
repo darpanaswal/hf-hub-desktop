@@ -34,7 +34,7 @@ jobs:
           mv tmp.json package.json
 
       - name: Install dependencies
-        run: cd hf-vscode && npm ci
+        run: cd hf-vscode && npm install
 
       - name: TypeScript compile
         run: cd hf-vscode && npm run compile
@@ -90,7 +90,7 @@ jobs:
       - name: Install Electron deps and build
         run: |
           cd hf-desktop
-          npm ci
+          npm install
           npx electron-builder --mac --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -137,7 +137,7 @@ jobs:
       - name: Install Electron deps and build
         run: |
           cd hf-desktop
-          npm ci
+          npm install
           npx electron-builder --win --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -195,7 +195,7 @@ jobs:
       - name: Install Electron deps and build
         run: |
           cd hf-desktop
-          npm ci
+          npm install
           npx electron-builder --linux --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

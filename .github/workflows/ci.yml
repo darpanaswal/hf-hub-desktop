@@ -56,7 +56,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: cd hf-vscode && npm ci
+        run: cd hf-vscode && npm install
 
       - name: TypeScript compile check
         run: cd hf-vscode && npx tsc -p tsconfig.json --noEmit
