@@ -2,7 +2,7 @@ blank_issues_enabled: false
 
 contact_links:
   - name: Question / Discussion
-    url: https://github.com/YOUR_USERNAME/hf-hub-desktop/discussions
+    url: https://github.com/darpanaswal/hf-hub-desktop/discussions
     about: Ask questions and discuss the project here
 
   - name: Hugging Face Hub Docs

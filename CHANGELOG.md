@@ -14,7 +14,19 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [1.0.0] — 2025-03-15
+## [1.1.0] — 2026-03-20
+
+### Added
+- Download individual files: file picker in the download modal loads the full repo
+  file list — select any subset to download rather than the entire repository
+- Subfolder checkbox in the download modal: optionally create a `<repo-name>/`
+  subfolder inside your chosen directory (on by default, can be unchecked)
+- Multi-file upload: new Files button in the upload form opens a native
+  multi-file selection dialog alongside the existing Folder button
+
+---
+
+## [1.0.0] — 2026-03-15
 
 ### Added
 
@@ -65,5 +77,6 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ---
 
-[Unreleased]: https://github.com/YOUR_USERNAME/hf-hub-desktop/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/YOUR_USERNAME/hf-hub-desktop/releases/tag/v1.0.0
+[Unreleased]: https://github.com/darpanaswal/hf-hub-desktop/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/darpanaswal/hf-hub-desktop/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/darpanaswal/hf-hub-desktop/releases/tag/v1.0.0

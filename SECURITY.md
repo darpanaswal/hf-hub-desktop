@@ -11,7 +11,7 @@
 
 **Do not open a public GitHub issue for security vulnerabilities.**
 
-Email: [your-email@example.com] with subject: `[HF Hub Desktop] Security`
+Email: [darpanaswal@gmail.com] with subject: `[HF Hub Desktop] Security`
 
 Include:
 - Description of the vulnerability

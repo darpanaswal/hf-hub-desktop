@@ -1,6 +1,6 @@
 {
   "name": "hf-hub-desktop",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Desktop GUI for Hugging Face Hub \u2014 browse, download and upload models & datasets",
   "main": "electron/main.js",
   "scripts": {
@@ -74,21 +74,21 @@
       ],
       "category": "Development"
     },
-    "copyright": "Copyright \u00a9 2025 YOUR_NAME",
+    "copyright": "Copyright \u00a9 2025 Darpan Aswal",
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }
   },
-  "homepage": "https://github.com/YOUR_USERNAME/hf-hub-desktop",
+  "homepage": "https://github.com/darpanaswal/hf-hub-desktop",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/hf-hub-desktop.git"
+    "url": "https://github.com/darpanaswal/hf-hub-desktop.git"
   },
   "license": "MIT",
   "author": {
-    "name": "YOUR_NAME",
-    "email": "YOUR_EMAIL"
+    "name": "Darpan Aswal",
+    "email": "darpanaswal@gmail.com"
   },
   "keywords": [
     "huggingface",
@@ -99,6 +99,6 @@
     "desktop"
   ],
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/hf-hub-desktop/issues"
+    "url": "https://github.com/darpanaswal/hf-hub-desktop/issues"
   }
 }

@@ -2,15 +2,15 @@
 
 > GUI for Hugging Face Hub — browse, download, and upload models & datasets without writing code.
 
-[![CI](https://github.com/YOUR_USERNAME/hf-hub-desktop/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/hf-hub-desktop/actions/workflows/ci.yml)
-[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/DarpanAswal.hf-hub-vscode?label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=DarpanAswal.hf-hub-vscode)
+[![CI](https://github.com/darpanaswal/hf-hub-desktop/actions/workflows/ci.yml/badge.svg)](https://github.com/darpanaswal/hf-hub-desktop/actions/workflows/ci.yml)
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/darpanaswal.hf-hub-vscode?label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=darpanaswal.hf-hub-vscode)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Two products, one shared Python backend:
 
 | | Desktop App | VS Code Extension |
 |---|---|---|
-| **Install** | Download DMG/EXE/AppImage | `ext install DarpanAswal.hf-hub-vscode` |
+| **Install** | Download DMG/EXE/AppImage | `ext install darpanaswal.hf-hub-vscode` |
 | **Best for** | Local workstation, browsing | SSH/cluster, script-adjacent workflows |
 | **Requires** | Nothing extra | Python 3.8+ on PATH |
 
@@ -56,7 +56,7 @@ The Python backend runs on `127.0.0.1:57891` and is shared — if the desktop ap
 
 **From Marketplace:**
 ```
-ext install DarpanAswal.hf-hub-vscode
+ext install darpanaswal.hf-hub-vscode
 ```
 
 **Manual install** (for clusters without internet access in VS Code):
