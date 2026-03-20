@@ -54,8 +54,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-          cache-dependency-path: hf-vscode/package-lock.json
 
       - name: Install dependencies
         run: cd hf-vscode && npm ci
@@ -82,11 +80,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-          cache-dependency-path: hf-desktop/frontend/package-lock.json
 
       - name: Install dependencies
-        run: cd hf-desktop/frontend && npm ci
+        run: cd hf-desktop/frontend && npm install
+
+      - name: Install dependencies
+        run: cd hf-desktop/frontend && npm install
 
       - name: TypeScript compile check
         run: cd hf-desktop/frontend && npx tsc -p tsconfig.json --noEmit

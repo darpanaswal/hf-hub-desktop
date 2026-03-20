@@ -21,8 +21,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-          cache-dependency-path: hf-vscode/package-lock.json
 
       - name: Extract version from tag
         id: version
@@ -84,7 +82,7 @@ jobs:
       - name: Install frontend deps and build
         run: |
           cd hf-desktop/frontend
-          npm ci
+          npm install
           npm run build
 
       # FIX 2: Run electron-builder directly with --publish never so it doesn't
@@ -133,7 +131,7 @@ jobs:
       - name: Install frontend deps and build
         run: |
           cd hf-desktop/frontend
-          npm ci
+          npm install
           npm run build
 
       - name: Install Electron deps and build
@@ -191,7 +189,7 @@ jobs:
       - name: Install frontend deps and build
         run: |
           cd hf-desktop/frontend
-          npm ci
+          npm install
           npm run build
 
       - name: Install Electron deps and build
