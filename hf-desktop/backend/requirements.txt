@@ -1,4 +1,4 @@
-huggingface_hub>=0.25.0
+huggingface_hub>=1.12.0
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0
 pydantic>=2.6.0
